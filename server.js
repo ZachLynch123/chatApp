@@ -1,6 +1,7 @@
 const express = require('express');
 const parser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 const app = express();
 const http = require('http').Server(app);
@@ -24,6 +25,9 @@ mongoose
 .then(() => { console.log('MongoDB connected..');})
 .catch(e => {console.log(e);
 })
+
+// cors
+app.use(cors());
 
 // Statically serving data
 app.use(express.static(__dirname));
