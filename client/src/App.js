@@ -21,10 +21,12 @@ class App extends Component {
       console.log('client connected')
       this.setState({
         socket: clientSocket
+      });
+      this.setState({
+        socket: clientSocket
       })
-      console.log(this.state);
-      
-    })    
+
+    });
   }
   componentWillMount() {
     this.initSocket();
@@ -55,6 +57,8 @@ class App extends Component {
 
 
   async sendMessage() {
+
+    
     try {
       fetch('http://localhost:5000/messages', {
         method: 'POST',
@@ -67,9 +71,11 @@ class App extends Component {
           message: 'This is sent from React front-end!',
         })
       });
-      console.log(this.state.socket);
-
-      
+      const clientSocket = io('http://localhost:5000/')
+      clientSocket.on('message', message => {
+        console.log(message);
+        
+      })
     } catch(e) {
       console.log(e);
       
