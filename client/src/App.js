@@ -1,28 +1,58 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client'
 import './App.css';
+
+
+
 
 class App extends Component {
 
-  state = {
-    names: []
+  constructor(props) {
+    super(props);
+    this.state = {
+      messageContents: [],
+      socket: null
+    }
+  }
+
+  initSocket = () => {
+    const clientSocket = io('http://localhost:5000/')
+    clientSocket.on('connect',() => {
+      console.log('client connected')
+      this.setState({
+        socket: clientSocket
+      })
+      console.log(this.state);
+      
+    })    
+  }
+  componentWillMount() {
+    this.initSocket();
   }
 
   componentDidMount() {
-   this.getMessages();
-
+    this.getMessages();  
   }
 
   async getMessages() {
     try {
       const data = await fetch('http://localhost:5000/messages');
       const jsonData = await data.json();
-      console.log(jsonData);
+      this.setState({
+        messageContents: jsonData
+      })
       
 
     } catch(e) {
       console.log(e);
     }
   }
+
+  addMessage(message) {
+    console.log(message);
+    this.getMessages()
+  }
+
 
   async sendMessage() {
     try {
@@ -37,6 +67,8 @@ class App extends Component {
           message: 'This is sent from React front-end!',
         })
       });
+      console.log(this.state.socket);
+
       
     } catch(e) {
       console.log(e);
@@ -46,11 +78,17 @@ class App extends Component {
 
 
   render() {
+    const { messageContents } = this.state;
+    
+    console.log(this.state);
+    
+    
+
     return (
       <div className="App">
         <header className="App-header">
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+            
           </p>
           <button onClick={this.sendMessage}> Hey I'm a button click me!</button>
           <a
